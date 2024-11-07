@@ -1,4 +1,4 @@
-mod YourContract;
+mod bettingcontract;
 #[cfg(test)]
 mod test {
     mod TestContract;

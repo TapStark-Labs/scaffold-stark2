@@ -1,75 +1,118 @@
 "use client";
 
-import Link from "next/link";
 import type { NextPage } from "next";
-import { Address } from "~~/components/scaffold-stark";
-import { useAccount } from "~~/hooks/useAccount";
-import { Address as AddressType } from "@starknet-react/chains";
+import { useAccount } from "@starknet-react/core";
+import { CustomConnectButton } from "~~/components/scaffold-stark/CustomConnectButton";
+import { useScaffoldReadContract } from "~~/hooks/scaffold-stark/useScaffoldReadContract";
+import { useScaffoldWriteContract } from "~~/hooks/scaffold-stark/useScaffoldWriteContract";
+import { notification } from "~~/utils/scaffold-stark";
+import { useState } from "react";
 import Image from "next/image";
+import { useScaffoldMultiWriteContract } from "~~/hooks/scaffold-stark/useScaffoldMultiWriteContract";
 
 const Home: NextPage = () => {
-  const connectedAddress = useAccount();
+  const { address: connectedAddress, isConnected, isConnecting } = useAccount();
+  const [tokensToBuy, setTokensToBuy] = useState<string | bigint>("");
+
+  const { sendAsync: placebeat } = useScaffoldWriteContract({
+    contractName: "bettingcontract",
+    functionName: "place_bet",
+    args: [2],
+  });
+
+  const { data: pricepool, refetch } = useScaffoldReadContract({
+    contractName: "bettingcontract",
+    functionName: "get_prize_pool",
+    watch: true,
+  });
+
+
+  const { sendAsync: placebeat2 } = useScaffoldWriteContract({
+        contractName: "Eth",
+        functionName: "approve",
+        args: ["0x034930182d3d70e06b1739Fb66679e5C616D433734654806545B5Ba162CA78d7",  5 * 10 ** 17],
+  });
+  const handleBetClick = () => {
+    console.log("bet click");
+  };
+
+  const { sendAsync: placebeat3 } = useScaffoldWriteContract({
+    contractName: "bettingcontract",
+    functionName: "place_bet",
+    args: [  5 * 10 ** 17],
+});
+const handleBetClick2 = () => {
+console.log("bet click");
+};
+
+
 
   return (
     <>
-      <div className="flex items-center flex-col flex-grow pt-10">
+     <div className="flex items-center flex-col flex-grow pt-10">
         <div className="px-5">
-          <h1 className="text-center">
-            <span className="block text-2xl mb-2">Welcome to</span>
-            <span className="block text-4xl font-bold">Scaffold-Stark 2</span>
+        <h1 className="uppercase text-lg font-bold bg-gradient-to-r from-cyan-500 to-cyan-300 bg-clip-text text-transparent">
+            TapStark
           </h1>
-          <div className="flex justify-center items-center space-x-2">
-            <p className="my-2 font-medium text-[#00A3FF]">
-              Connected Address:
-            </p>
-            <Address address={connectedAddress.address as AddressType} />
-          </div>
-          <p className="text-center text-lg">
-            Edit your smart contract{" "}
-            <code className="bg-underline italic text-base font-bold max-w-full break-words break-all inline-block">
-              YourContract.cairo
-            </code>{" "}
-            in{" "}
-            <code className="bg-underline italic text-base font-bold max-w-full break-words break-all inline-block">
-              packages/snfoundry/contracts/src
-            </code>
+          
+        <div className="flex flex-col items-center gap-1 mb-12">
+          <p className="text-2xl text-gray-100 sm:text-3xl">Play to win the</p>
+          <Image
+            src="/pote-de-ouro.png"
+            alt="gold pot prize pool"
+            priority={true}
+            width={80}
+            height={80}
+            className="cursor-pointer sm:w-24 sm:h-24"
+          />
+          <p className="text-2xl font-bold text-gray-100 sm:text-3xl mb-2">
+            Grand Prize Pool
+          </p>
+          <p className="text-4xl font-bold text-cyan-400 glow-pulse sm:text-6xl">
+            1000
           </p>
         </div>
 
-        <div className="bg-container flex-grow w-full mt-16 px-8 py-12">
-          <div className="flex justify-center items-center gap-12 flex-col sm:flex-row">
-            <div className="flex flex-col bg-base-100 relative text-[12px] px-10 py-10 text-center items-center max-w-xs rounded-3xl border border-gradient">
-              <div className="trapeze"></div>
-              <Image
-                src="/debug-icon.svg"
-                alt="icon"
-                width={25}
-                height={25}
-              ></Image>
-              <p>
-                Tinker with your smart contract using the{" "}
-                <Link href="/debug" passHref className="link">
-                  Debug Contracts
-                </Link>{" "}
-                tab.
-              </p>
-            </div>
-            <div className="flex flex-col bg-base-100 relative text-[12px] px-10 py-10 text-center items-center max-w-xs rounded-3xl border border-gradient">
-              <div className="trapeze"></div>
-              <Image
-                src="/explorer-icon.svg"
-                alt="icon"
-                width={20}
-                height={20}
-              ></Image>
-              <p>
-                Play around with Multiwrite transactions using
-                useScaffoldMultiWrite() hook
-              </p>
-            </div>
-          </div>
+        <div className="flex flex-col items-center mb-8 relative">
+          <button
+            onClick={handleBetClick2}
+            style={{ borderRadius: "50%", padding: 0 }}
+          >
+            <Image
+              src="/star.png"
+              alt="Bet Button"
+              priority={true}
+              width={160}
+              height={160}
+              className="cursor-pointer sm:w-48 sm:h-48"
+            />
+          </button>
+
+          <button
+  className="btn btn-primary"
+  onClick={async () => {
+    try {
+      await placebeat3();
+    } catch (e) {
+      console.error("Error sending transactions:", e);
+    }
+  }}
+>
+  Send Transactions
+</button>
+          {/*           <div>{showPoints && <div points={addedPoints} />}</div>
+           */}
         </div>
+
+        {/* {isConnected && ( */}
+        <div className="mb-4">
+          <p className="text-md font-bold glow-pulse sm:text-xl">Tap to play</p>
+        </div>
+        </div>
+        
       </div>
+   
+
     </>
   );
 };
