@@ -9,6 +9,7 @@ import { notification } from "~~/utils/scaffold-stark";
 import { useState } from "react";
 import Image from "next/image";
 import { useScaffoldMultiWriteContract } from "~~/hooks/scaffold-stark/useScaffoldMultiWriteContract";
+import { useDeployedContractInfo } from "~~/hooks/scaffold-stark";
 
 const Home: NextPage = () => {
   const { address: connectedAddress, isConnected, isConnecting } = useAccount();
@@ -19,31 +20,28 @@ const Home: NextPage = () => {
     return etherValue.toFixed(1);
   }
 
-  /* const { sendAsync: stakeEth } = useScaffoldMultiWriteContract({
+  const { data: bettingcontract } = useDeployedContractInfo("bettingcontract");
+
+  console.log("test: ", bettingcontract);
+
+  const { sendAsync: placebet } = useScaffoldMultiWriteContract({
     calls: [
       {
         contractName: "Eth",
         functionName: "approve",
-        args: [StakerContract?.address ?? "", 5 * 10 ** 17],
+        args: [bettingcontract?.address ?? "", 5 * 10 ** 17],
       },
       {
-        contractName: "Staker",
-        functionName: "stake",
+        contractName: "bettingcontract",
+        functionName: "place_bet",
         args: [5 * 10 ** 17],
       },
     ],
-  }); */
+  });
 
   const { data: prizepool } = useScaffoldReadContract({
     contractName: "bettingcontract",
     functionName: "get_prize_pool",
-    watch: true,
-  });
-
-  const { data: userPoints } = useScaffoldReadContract({
-    contractName: "bettingcontract",
-    functionName: "get_user_points",
-    args: [connectedAddress ?? ""],
     watch: true,
   });
 
@@ -59,14 +57,11 @@ const Home: NextPage = () => {
     console.log("bet click");
   }; */
 
-  console.log("testing prize pool: ", {userPoints});
-
-  const { sendAsync: placebeat } = useScaffoldWriteContract({
+  /* const { sendAsync: placebeat } = useScaffoldWriteContract({
     contractName: "bettingcontract",
     functionName: "place_bet",
     args: [5 * 10 ** 17],
-  });
-
+  }); */
 
   return (
     <>
@@ -100,7 +95,7 @@ const Home: NextPage = () => {
             <div
               onClick={async () => {
                 try {
-                  await placebeat();
+                  await placebet();
                 } catch (e) {
                   console.error("Error sending transactions:", e);
                 }
