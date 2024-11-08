@@ -9,15 +9,27 @@ import { FaucetSepolia } from "~~/components/scaffold-stark/FaucetSepolia";
 import { BlockExplorerSepolia } from "./scaffold-stark/BlockExplorerSepolia";
 import { BlockExplorer } from "./scaffold-stark/BlockExplorer";
 import Link from "next/link";
+import { useScaffoldReadContract } from "~~/hooks/scaffold-stark/useScaffoldReadContract";
+import { useAccount } from "@starknet-react/core";
 
 /**
  * Site footer
  */
 export const Footer = () => {
+  const { address: connectedAddress, isConnected, isConnecting } = useAccount();
   const nativeCurrencyPrice = useGlobalState(
     (state) => state.nativeCurrencyPrice,
   );
   const { targetNetwork } = useTargetNetwork();
+
+  const { data: userPoints } = useScaffoldReadContract({
+    contractName: "bettingcontract",
+    functionName: "get_user_points",
+    args: [connectedAddress ?? ""],
+    watch: true,
+  });
+
+  console.log('test - ', {nativeCurrencyPrice});
 
   // NOTE: workaround - check by name also since in starknet react devnet and sepolia has the same chainId
   const isLocalNetwork =
@@ -38,7 +50,7 @@ export const Footer = () => {
               <div>
                 <div className="btn btn-sm font-normal gap-1 cursor-auto border border-[#32BAC4] shadow-none">
                   <CurrencyDollarIcon className="h-4 w-4 text-[#32BAC4]" />
-                  <span>{nativeCurrencyPrice}</span>
+                  <span>{userPoints?.toString()}</span>
                 </div>
               </div>
             )}
