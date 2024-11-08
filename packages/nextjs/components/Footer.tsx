@@ -11,6 +11,7 @@ import { BlockExplorer } from "./scaffold-stark/BlockExplorer";
 import Link from "next/link";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-stark/useScaffoldReadContract";
 import { useAccount } from "@starknet-react/core";
+import Image from "next/image";
 
 /**
  * Site footer
@@ -18,7 +19,7 @@ import { useAccount } from "@starknet-react/core";
 export const Footer = () => {
   const { address: connectedAddress, isConnected, isConnecting } = useAccount();
   const nativeCurrencyPrice = useGlobalState(
-    (state) => state.nativeCurrencyPrice,
+    (state) => state.nativeCurrencyPrice
   );
   const { targetNetwork } = useTargetNetwork();
 
@@ -28,8 +29,6 @@ export const Footer = () => {
     args: [connectedAddress ?? ""],
     watch: true,
   });
-
-  console.log('test - ', {nativeCurrencyPrice});
 
   // NOTE: workaround - check by name also since in starknet react devnet and sepolia has the same chainId
   const isLocalNetwork =
@@ -50,17 +49,21 @@ export const Footer = () => {
               <div>
                 <div className="btn btn-sm font-normal gap-1 cursor-auto border border-[#32BAC4] shadow-none">
                   <CurrencyDollarIcon className="h-4 w-4 text-[#32BAC4]" />
+                  {/* <Image
+                    src="/coin-points.png"
+                    alt="Bet Button"
+                    priority={true}
+                    width={160}
+                    height={160}
+                    className="cursor-pointer sm:w-48 sm:h-48"
+                  /> */}
                   <span>{userPoints?.toString()}</span>
                 </div>
               </div>
             )}
-            
-
           </div>
         </div>
-        </div> </div>
-
-
-
+      </div>{" "}
+    </div>
   );
 };

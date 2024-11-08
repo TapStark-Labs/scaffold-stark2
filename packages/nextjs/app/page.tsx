@@ -10,6 +10,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { useScaffoldMultiWriteContract } from "~~/hooks/scaffold-stark/useScaffoldMultiWriteContract";
 import { useDeployedContractInfo } from "~~/hooks/scaffold-stark";
+/* import { useQuery } from '@tanstack/react-query'; */
 
 const Home: NextPage = () => {
   const { address: connectedAddress, isConnected, isConnecting } = useAccount();
@@ -22,7 +23,34 @@ const Home: NextPage = () => {
 
   const { data: bettingcontract } = useDeployedContractInfo("bettingcontract");
 
-  console.log("test: ", bettingcontract);
+/*   const {
+    data: playData,
+    error: playError,
+    isLoading: isPlayLoading,
+    refetch: refetchPlayResult,
+  } = useQuery({
+    queryKey: ["play"],
+    queryFn: async () => await fetchPlayResult(),
+    enabled: false,
+  }); */
+
+  const fetchPlayResult = async () => {
+    const txHash =
+      "0x01a8731a6abf51cee46f8a32e277826fe78c2efa72ac17d6190e1f389cbbc74e"; // should be dynamic
+  
+    const response = await fetch(`api/play?txHash=${txHash}`);
+    /* const response = await fetch(`/api/play`); */
+  
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+  
+    const data = await response.json();
+    console.log('test: ', {data});
+    return data;
+  };
+
+
 
   const { sendAsync: placebet } = useScaffoldMultiWriteContract({
     calls: [
@@ -45,23 +73,14 @@ const Home: NextPage = () => {
     watch: true,
   });
 
-  /* const { sendAsync: placebeat2 } = useScaffoldWriteContract({
-    contractName: "Eth",
-    functionName: "approve",
-    args: [
-      "0x034930182d3d70e06b1739Fb66679e5C616D433734654806545B5Ba162CA78d7",
-      5 * 10 ** 17,
-    ],
-  }); */
-  /* const handleBetClick = () => {
-    console.log("bet click");
-  }; */
-
-  /* const { sendAsync: placebeat } = useScaffoldWriteContract({
-    contractName: "bettingcontract",
-    functionName: "place_bet",
-    args: [5 * 10 ** 17],
-  }); */
+  const onBetClick = async () => {
+    try {
+      await placebet();
+      await fetchPlayResult();
+    } catch (e) {
+      console.error("Error placing bet or handling play:", e);
+    }
+  };
 
   return (
     <>
@@ -92,15 +111,7 @@ const Home: NextPage = () => {
           </div>
 
           <div className="flex flex-col items-center mb-8 relative">
-            <div
-              onClick={async () => {
-                try {
-                  await placebet();
-                } catch (e) {
-                  console.error("Error sending transactions:", e);
-                }
-              }}
-            >
+            <div onClick={onBetClick}>
               <Image
                 src="/star.png"
                 alt="Bet Button"

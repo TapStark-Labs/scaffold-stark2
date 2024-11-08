@@ -10,6 +10,9 @@ import { ProgressBar } from "~~/components/scaffold-stark/ProgressBar";
 import { appChains, connectors } from "~~/services/web3/connectors";
 import provider from "~~/services/web3/provider";
 import { useNativeCurrencyPrice } from "~~/hooks/scaffold-stark/useNativeCurrencyPrice";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 const ScaffoldStarkApp = ({ children }: { children: React.ReactNode }) => {
   useNativeCurrencyPrice();
@@ -52,14 +55,18 @@ export const ScaffoldStarkAppWithProviders = ({
   if (!mounted) return null;
 
   return (
-    <StarknetConfig
-      chains={appChains}
-      provider={provider}
-      connectors={connectors}
-      explorer={starkscan}
-    >
-      <ProgressBar />
-      <ScaffoldStarkApp>{children}</ScaffoldStarkApp>
-    </StarknetConfig>
+    
+      <StarknetConfig
+        chains={appChains}
+        provider={provider}
+        connectors={connectors}
+        explorer={starkscan}
+      >
+        <QueryClientProvider client={queryClient}>
+        <ProgressBar />
+        <ScaffoldStarkApp>{children}</ScaffoldStarkApp>
+        </QueryClientProvider>
+      </StarknetConfig>
+
   );
 };
