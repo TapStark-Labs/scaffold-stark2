@@ -7,7 +7,7 @@ const deployedContracts = {
   devnet: {
     bettingcontract: {
       address:
-        "0x6ac8dc583f5c8bf96d046f71fac5ac9409ee4e2d26f8d0b2c52c2b051300272",
+        "0x4e0f044aa4fe0240921dec87661d520c4e2bd397a81d984492184b3da3a8af8",
       abi: [
         {
           type: "impl",
@@ -205,7 +205,7 @@ const deployedContracts = {
         },
       ],
       classHash:
-        "0x669f4b28586dc06d37acf35c926d59b4200e6094a7a0ceabdfcf4d3c96f1dc",
+        "0xa25fa11bf170d54fa6b99136513d82d49b6f1b52b68688583d336b447937b7",
     },
   },
 } as const;

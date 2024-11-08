@@ -10,7 +10,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { useScaffoldMultiWriteContract } from "~~/hooks/scaffold-stark/useScaffoldMultiWriteContract";
 import { useDeployedContractInfo } from "~~/hooks/scaffold-stark";
-/* import { useQuery } from '@tanstack/react-query'; */
+import { RpcProvider, Contract, Account } from "starknet";
 
 const Home: NextPage = () => {
   const { address: connectedAddress, isConnected, isConnecting } = useAccount();
@@ -23,34 +23,26 @@ const Home: NextPage = () => {
 
   const { data: bettingcontract } = useDeployedContractInfo("bettingcontract");
 
-/*   const {
-    data: playData,
-    error: playError,
-    isLoading: isPlayLoading,
-    refetch: refetchPlayResult,
-  } = useQuery({
-    queryKey: ["play"],
-    queryFn: async () => await fetchPlayResult(),
-    enabled: false,
-  }); */
+  const provider = new RpcProvider({
+    nodeUrl: `https://starknet-sepolia.infura.io/v3/${process.env.INFURA_API_KEY}`,
+  });
 
   const fetchPlayResult = async () => {
     const txHash =
-      "0x01a8731a6abf51cee46f8a32e277826fe78c2efa72ac17d6190e1f389cbbc74e"; // should be dynamic
-  
+      "0x1df76763fdf36d7c3693b9c89c6dfe130fc3e7b3e13919484e70811f177d513";
+
     const response = await fetch(`api/play?txHash=${txHash}`);
-    /* const response = await fetch(`/api/play`); */
-  
+
+    console.log("test: ", { response });
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-  
+
     const data = await response.json();
-    console.log('test: ', {data});
+    console.log("test frontend: ", { data });
     return data;
   };
-
-
 
   const { sendAsync: placebet } = useScaffoldMultiWriteContract({
     calls: [
@@ -76,6 +68,9 @@ const Home: NextPage = () => {
   const onBetClick = async () => {
     try {
       await placebet();
+      /* const txHash = await placebet(); */
+      /* console.log("Transaction hash:", txHash);
+      await fetchPlayResult(txHash); */
       await fetchPlayResult();
     } catch (e) {
       console.error("Error placing bet or handling play:", e);
