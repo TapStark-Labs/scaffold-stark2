@@ -1,192 +1,66 @@
-# 🏗 Scaffold-Stark
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-<h4 align="center">
-  <a href="https://www.docs.scaffoldstark.com/">Documentation</a> |
-  <a href="https://www.scaffoldstark.com/">Website</a> |
-  <a href="https://scaffold-stark-demo.vercel.app/debug">Demo</a>
-</h4>
+# TapStark - A Decentralized Betting Game on StarkNet
 
-🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on Starknet blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
+## Idea Summary
 
-⚙️ Built using NextJS, Starknet.js, Scarb, Starknet-React, Starknet Foundry and Typescript.
+We are building an engaging betting game on StarkNet, where users participate by making microtransactions as betting attempts. Each attempt is triggered by tapping a button in the user interface (UI), representing a small transaction. With each bet, users accumulate points, which could later unlock rewards. The game features a lively mascot named Starky, who reacts as users play. In the future, we plan to launch the Starky meme coin and airdrop it to users based on their accumulated points.
 
-- ✅ **Contract Fast Reload**: Your frontend auto-adapts to your smart contracts as you deploy them.
-- 🪝 [**Custom hooks**](https://www.docs.scaffoldstark.com/hooks/): Collection of React hooks wrapper around [starknet-react](https://starknet-react.com/) to simplify interactions with smart contracts with typescript autocompletion.
-- 🧱 [**Components**](https://www.docs.scaffoldstark.com/components): Collection of common web3 components to quickly build your frontend.
-- 🔥 **Burner Wallet & Prefunded Account**: Quickly test your application with a burner wallet and prefunded accounts.
-- 🔐 **Integration with Wallet Providers**: Connect to different wallet providers and interact with Starknet network.
+Our main objectives are twofold: to create a fun, accessible betting experience and to contribute to StarkNet's network performance by increasing Transactions Per Second (TPS).
+By making frequent microtransactions, users help elevate TPS metrics, showcasing StarkNet’s scalability. After each play, the game checks if the user has won the prize pool. If they lose, their transaction adds to the pool. If they win, the entire pool is transferred to their wallet, resetting the pool for the next round.
 
-![Debug Contracts tab](./packages/nextjs/public/debug-image.png)
+## Key Features
 
-## Requirements
+- **Microtransactions as Betting Attempts**: Users begin by funding their game wallet with a small amount of ETH. Each tap on the “Tap to Play” button initiates a microtransaction, registering as a betting entry.
+- **Determination of Winners**: Every time a user taps to play, the game determines if it’s a winning attempt. If successful, the user claims the entire prize pool. If not, the funds from the attempt are added to the prize pool, increasing its value for future rounds.
+- **Accumulation of Points**: With each betting entry, users earn points stored on the blockchain via a smart contract. In the future, we plan to launch the Starky meme coin, which will be airdropped to users based on the points they have accumulated.
+- **Simple UI/UX**:
+  1. **Initial Screen**: Displays a button to "Start Playing" and user tap to connect.
+  2. **Game Screen**: After user connects, the UI changes to a "Tap to Play" button. The prize pool (pot) is also displayed, showing the total amount of ETH to be won.
 
-Before you begin, you need to install the following tools:
+## Technical Components
 
-- [Node (>= v18.17)](https://nodejs.org/en/download/)
-- Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
-- [Git](https://git-scm.com/downloads)
-- [Rust](https://www.rust-lang.org/tools/install)
-- [asdf](https://asdf-vm.com/guide/getting-started.html)
-- [Cairo 1.0 extension for VSCode](https://marketplace.visualstudio.com/items?itemName=starkware.cairo1)
+- **Smart Contract**: A smart contract will be deployed to manage and store user points, track microtransactions, and handle prize pool transfers to winners.
+- **Transaction Listener**: A Next script will continuously listen for user transactions (taps) on the network. This script will determine whether a given transaction is a winning attempt and update the contract accordingly.
+- **User Interface (React/Frontend)**: A simple web interface will guide users through the process of funding their wallet and participating in the betting game. The interface will integrate with the blockchain to update the prize pool and display user points.
 
-### Starknet-devnet version
+## Future Potential
 
-To ensure the proper functioning of scaffold-stark, your local `starknet-devnet` version must be `0.2.0`. To accomplish this, first check your local starknet-devnet version:
+- **Launch of Starky Meme Coin**: Our mascot, Starky, will soon be represented by a dedicated meme coin. This Starky token will reward users who have accumulated points through gameplay.
+- **Verifiably Fair Gameplay**: We plan to improve the verifiably fair mechanics of the game, ensuring that every outcome is transparent and provably random, increasing player trust and confidence in the system.
+- **Open Verifiably Fair Engine**: Our goal is to develop a verifiably fair engine that not only powers this game but can also be used by other developers to ensure fairness in their own StarkNet-based games. This opens the door for broader use across the ecosystem, making our game a model for decentralized fairness.
 
-```sh
-starknet-devnet --version
-```
+## Getting Started
 
-If your local starknet-devnet version is not `0.2.0`, you need to install it.
-
-- Install Starknet-devnet `0.2.0` via `asdf` ([instructions](https://github.com/gianalarcon/asdf-starknet-devnet/blob/main/README.md)).
-
-### Scarb version
-
-To ensure the proper functioning of scaffold-stark, your local `Scarb` version must be `2.8.3`. To accomplish this, first check your local Scarb version:
-
-```sh
-scarb --version
-```
-
-If your local Scarb version is not `2.8.3`, you need to install it.
-
-- Install Scarb `2.8.3` via `asdf` ([instructions](https://docs.swmansion.com/scarb/download.html#install-via-asdf)).
-
-### Starknet Foundry version
-
-To ensure the proper functioning of the tests on scaffold-stark, your Starknet Foundry version must be 0.31.0. To accomplish this, first check your Starknet Foundry version:
-
-```sh
-snforge --version
-```
-
-If your Starknet Foundry version is not `0.31.0`, you need to install it.
-
-- Install Starknet Foundry `0.31.0` via `asdf` ([instructions](https://foundry-rs.github.io/starknet-foundry/getting-started/installation.html#installation-via-asdf)).
-
-## Compatible versions
-
-- Starknet-devnet - v0.2.0
-- Scarb - v2.8.3
-- Snforge - v0.31.0
-- Cairo - v2.8.2
-- Rpc - v0.7.1
-
-## Quickstart with Starknet-Devnet
-
-To get started with Scaffold-Stark, follow the steps below:
-
-1. Clone this repo and install dependencies
+First, run the development server:
 
 ```bash
-git clone https://github.com/Scaffold-Stark/scaffold-stark-2.git
-cd scaffold-stark-2
-yarn install
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-2. Run a local network in the first terminal.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-```bash
-yarn chain
-```
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-> To run a fork : `yarn chain --fork-network <URL> [--fork-block <BLOCK_NUMBER>]`
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-This command starts a local Starknet network using Devnet. The network runs on your local machine and can be used for testing and development. You can customize the network configuration in `scaffold.config.ts` for your nextjs app.
+## Learn More
 
-3. On a second terminal, deploy the sample contract:
+To learn more about Next.js, take a look at the following resources:
 
-```bash
-yarn deploy
-```
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-This command deploys a sample smart contract to the local network. The contract is located in `packages/snfoundry/contracts/src` and can be modified to suit your needs. The `yarn deploy` command uses the deploy script located in `packages/snfoundry/scripts-ts/deploy.ts` to deploy the contract to the network. You can also customize the deploy script.
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-By default `Scaffold-Stark` takes the first prefunded account from `starknet-devnet` as a deployer address,
+## Deploy on Vercel
 
-4. On a third terminal, start your NextJS app:
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-```bash
-yarn start
-```
-
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
-
-5. Check your environment variables. We have a yarn postinstall script that helps to fill in your environment variables. If the environment variable does not exist, you can fill them it manually to get the app running!
-
-## Quickstart with Sepolia Testnet
-
-<details>
-
-1. Make sure you alredy cloned this repo and installed dependencies.
-
-2. Prepare your environment variables.
-
-Find the `packages/snfoundry/.env` file and fill the env variables related to Sepolia testnet with your own wallet account contract address and private key.
-
-3. Change your default network to Sepolia testnet.
-
-Find the `packages/nextjs/scaffold.config.ts` file and change the `targetNetworks` to `[chains.sepolia]`.
-
-![chall-0-scaffold-config](./packages/nextjs/public/scaffold-config.png)
-
-4. Get some testnet tokens
-
-You will need to get some `ETH` or `STRK` Sepolia tokens to deploy your contract to Sepolia testnet.
-
-> Some popular faucets are [Starknet Faucet](https://starknet-faucet.vercel.app/) and [Blastapi Starknet Sepolia Eth](https://blastapi.io/faucets/starknet-sepolia-eth)
-
-4. Open a terminal, deploy the sample contract to Sepolia testnet:
-
-```bash
-yarn deploy --network sepolia
-```
-
-5. On a second terminal, start your NextJS app:
-
-```bash
-yarn start
-```
-
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
-
-### RPC specific version
-
-To ensure the proper functioning of the scaffold-stark with Testnet or Mainnet, your RPC version must be `0.7.1`. This repository contains a `.env.example` file, where we provided the default RPC URL for the Starknet Testnet: `RPC_URL_SEPOLIA=https://starknet-sepolia.public.blastapi.io/rpc/v0_7`. Let's verify this RPC version is `0.7.1` by calling a `POST` request in an API platform like `Postman` or `Insommia` . Your API endpoint should be `https://starknet-sepolia.public.blastapi.io/rpc/v0_7` and the body should be:
-
-```json
-{
- "jsonrpc":"2.0",
- "method":"starknet_specVersion",
- "id":1
-}
-```
-
-You have to paste the endpoint and body in the API platform and click on the `Send` button. If the response is `0.7.1`, then you are good to go. Otherwise, you have to get the correct RPC URL endpoint.
-
-![rpc-version](./packages/nextjs/public/rpc-version.png)
-</details>
-
-## **What's next**
-
-- Edit your smart contract `YourContract.cairo` in `packages/snfoundry/contracts/src`
-- Edit your frontend homepage at `packages/nextjs/app/page.tsx`. For guidance on [routing](https://nextjs.org/docs/app/building-your-application/routing/defining-routes) and configuring [pages/layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts) checkout the Next.js documentation.
-- Edit your deployment scripts in `packages/snfoundry/script-ts/deploy.ts`
-- Edit your smart contract tests in `packages/snfoundry/contracts/src/test`. To run tests use `yarn test`
-- You can write unit tests for your Next.js app! Run them with one the following scripts below.
-  - `yarn test:nextjs` to run regular tests with watch mode
-  - `yarn test:nextjs run` to run regular tests without watch mode
-  - `yarn test:nextjs run --coverage` to run regular tests without watch mode with coverage
-
-## Documentation
-
-Visit our [docs](https://www.docs.scaffoldstark.com/) to learn how to start building with Scaffold-Stark.
-
-To know more about its features, check out our [website](https://scaffoldstark.com)
-
-## Contributing to Scaffold-Stark
-
-We welcome contributions to Scaffold-Stark!
-
-Please see [CONTRIBUTING.MD](https://github.com/Scaffold-Stark/scaffold-stark-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-Stark.
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
