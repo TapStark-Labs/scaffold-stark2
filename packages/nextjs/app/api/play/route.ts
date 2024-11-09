@@ -11,6 +11,7 @@ const accountAddress =
   nodeUrl: `https://starknet-sepolia.infura.io/v3/${process.env.INFURA_API_KEY}`,
 }); */
 
+console.log("deployedContracts", deployedContracts.devnet.bettingcontract.address)
 const provider = new RpcProvider({
   nodeUrl: "http://localhost:5050",
 });

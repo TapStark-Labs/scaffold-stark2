@@ -63,7 +63,9 @@ const Home: NextPage = () => {
     watch: true,
   });
 
-  const onBetClick = async () => {
+  const onBetClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     try {
       console.log("clicked");
       if (!isConnected) {
