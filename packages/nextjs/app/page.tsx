@@ -10,11 +10,12 @@ import { useState } from "react";
 import Image from "next/image";
 import { useScaffoldMultiWriteContract } from "~~/hooks/scaffold-stark/useScaffoldMultiWriteContract";
 import { useDeployedContractInfo } from "~~/hooks/scaffold-stark";
-import { RpcProvider, Contract, Account } from "starknet";
 
 const Home: NextPage = () => {
   const { address: connectedAddress, isConnected, isConnecting } = useAccount();
   const [tokensToBuy, setTokensToBuy] = useState<string | bigint>("");
+
+  console.log({ connectedAddress });
 
   function formatEther(weiValue: number) {
     const etherValue = weiValue / 1e18;
@@ -24,9 +25,6 @@ const Home: NextPage = () => {
   const { data: bettingcontract } = useDeployedContractInfo("bettingcontract");
 
   const fetchPlayResult = async (txHash: string) => {
-    /* const txHash =
-      "0x1df76763fdf36d7c3693b9c89c6dfe130fc3e7b3e13919484e70811f177d513"; */
-
     const response = await fetch(`api/play?txHash=${txHash}`);
 
     if (!response.ok) {
@@ -61,6 +59,11 @@ const Home: NextPage = () => {
 
   const onBetClick = async () => {
     try {
+      if (!isConnected) {
+        console.log("Please connect");
+        return;
+      }
+
       await placebet();
       const txHash = await placebet();
       console.log("Transaction hash:", txHash);
@@ -78,11 +81,8 @@ const Home: NextPage = () => {
     <>
       <div className="flex items-center flex-col flex-grow pt-10">
         <div className="px-5">
-          {/* <h1 className="uppercase text-lg font-bold bg-gradient-to-r from-cyan-500 to-cyan-300 bg-clip-text text-transparent">
-            TapStark
-          </h1> */}
-
-          <div className="flex flex-col items-center gap-1 mb-12">
+          
+          <div className="flex flex-col items-center gap-1 mb-12 justify-center">
             <p className="text-2xl text-gray-100 sm:text-3xl">
               Play to win the
             </p>
@@ -102,25 +102,24 @@ const Home: NextPage = () => {
             </p>
           </div>
 
-          <div className="flex flex-col items-center mb-8 relative">
-            <div onClick={onBetClick}>
-              <Image
-                src="/star.png"
-                alt="Bet Button"
-                priority={true}
-                width={160}
-                height={160}
-                className="cursor-pointer sm:w-48 sm:h-48"
-              />
+          {!isConnected ? (
+            <h1 className="uppercase text-lg font-bold bg-gradient-to-r from-cyan-500 to-cyan-300 bg-clip-text text-transparent text-center">
+              Connect to play
+            </h1>
+          ) : (
+            <div className="flex flex-col items-center mb-8 relative">
+              <div onClick={onBetClick}>
+                <Image
+                  src="/star.png"
+                  alt="Bet Button"
+                  priority={true}
+                  width={160}
+                  height={160}
+                  className="cursor-pointer sm:w-48 sm:h-48"
+                />
+              </div>
             </div>
-          </div>
-
-          {/* {isConnected && ( */}
-          {/* <div className="mb-4">
-            <p className="text-md font-bold glow-pulse sm:text-xl">
-              Tap to play
-            </p>
-          </div> */}
+          )}
         </div>
       </div>
     </>
