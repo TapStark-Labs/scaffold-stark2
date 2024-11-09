@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { RpcProvider, Contract, Account } from "starknet";
 import betting_game_Abi from "./betting_game_abi.json";
+import deployedContracts from "../../../contracts/deployedContracts"
 
 const privateKey = process.env.ORIGIN_PRIVATE_KEY;
 const accountAddress =
   "0x07701ed1a79e2672b5b83e68a7c0d9d120b4ade0549dab6272a8dfa3ad5da9bf";
-
 /* const provider = new RpcProvider({
   nodeUrl: `https://starknet-sepolia.infura.io/v3/${process.env.INFURA_API_KEY}`,
 }); */
@@ -20,7 +20,7 @@ async function transferPrize(recipient: any) {
   console.log("Initiating prize to: ", recipient);
 
   const bettingGameContractAddress =
-    "0x001058b0fd2e63557dc7ee60dce5f45febb49f59518f330688a321e95b6b2e46";
+  deployedContracts.devnet.bettingcontract.address;
   const gameContract = new Contract(
     betting_game_Abi,
     bettingGameContractAddress,
