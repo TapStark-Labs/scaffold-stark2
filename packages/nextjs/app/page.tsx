@@ -59,9 +59,10 @@ const Home: NextPage = () => {
     watch: true,
   });
 
-  const onBetClick = async () => {
+  const onBetClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     try {
-      await placebet();
       const txHash = await placebet();
       console.log("Transaction hash:", txHash);
       if (txHash) {

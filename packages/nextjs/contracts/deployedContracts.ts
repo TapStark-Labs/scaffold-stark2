@@ -7,7 +7,7 @@ const deployedContracts = {
   devnet: {
     bettingcontract: {
       address:
-        "0xcec7f9287c0cba17e3cc833e0b2bbe0fe2df5856b899b8ef78acb55a84aeca",
+        "0x5888ef5859b255448126bd20b1e3b9b2f7b2b3dc2af64807c0443cc20db9d85",
       abi: [
         {
           type: "impl",
