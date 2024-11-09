@@ -23,24 +23,18 @@ const Home: NextPage = () => {
 
   const { data: bettingcontract } = useDeployedContractInfo("bettingcontract");
 
-  const provider = new RpcProvider({
-    nodeUrl: `https://starknet-sepolia.infura.io/v3/${process.env.INFURA_API_KEY}`,
-  });
-
-  const fetchPlayResult = async () => {
-    const txHash =
-      "0x1df76763fdf36d7c3693b9c89c6dfe130fc3e7b3e13919484e70811f177d513";
+  const fetchPlayResult = async (txHash: string) => {
+    /* const txHash =
+      "0x1df76763fdf36d7c3693b9c89c6dfe130fc3e7b3e13919484e70811f177d513"; */
 
     const response = await fetch(`api/play?txHash=${txHash}`);
-
-    console.log("test: ", { response });
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const data = await response.json();
-    console.log("test frontend: ", { data });
+    console.log("testing frontend: ", { data });
     return data;
   };
 
@@ -68,10 +62,13 @@ const Home: NextPage = () => {
   const onBetClick = async () => {
     try {
       await placebet();
-      /* const txHash = await placebet(); */
-      /* console.log("Transaction hash:", txHash);
-      await fetchPlayResult(txHash); */
-      await fetchPlayResult();
+      const txHash = await placebet();
+      console.log("Transaction hash:", txHash);
+      if (txHash) {
+        await fetchPlayResult(txHash);
+      } else {
+        console.error("Transaction hash is undefined");
+      }
     } catch (e) {
       console.error("Error placing bet or handling play:", e);
     }

@@ -6,8 +6,12 @@ const privateKey = process.env.ORIGIN_PRIVATE_KEY;
 const accountAddress =
   "0x07701ed1a79e2672b5b83e68a7c0d9d120b4ade0549dab6272a8dfa3ad5da9bf";
 
-const provider = new RpcProvider({
+/* const provider = new RpcProvider({
   nodeUrl: `https://starknet-sepolia.infura.io/v3/${process.env.INFURA_API_KEY}`,
+}); */
+
+const provider = new RpcProvider({
+  nodeUrl: "http://localhost:5050",
 });
 
 const account = new Account(provider, accountAddress, privateKey as string);
@@ -34,63 +38,64 @@ async function transferPrize(recipient: any) {
     });
 
     // Wait for transaction confirmation
-    /* const txReceipt = await provider.waitForTransaction(txResponse.transaction_hash);
-    console.log(`Prize transferred to ${recipient}, Transaction hash: ${txReceipt.transaction_hash}`);
+    const txReceipt = await provider.waitForTransaction(
+      txResponse.transaction_hash
+    );
 
-    console.log("Transfer transaction submitted:", transferTx.transaction_hash);
+    console.log(`Prize transferred to ${recipient}`);
 
-    if (txReceipt.execution_status !== "SUCCEEDED") {
+    if (
+      "execution_status" in txReceipt &&
+      txReceipt.execution_status !== "SUCCEEDED"
+    ) {
       throw new Error(
         `Transfer failed with status: ${txReceipt.execution_status}`
       );
     }
 
-    return txReceipt; */
+    return txReceipt;
   } catch (error) {
-    /* console.error("Error transferring prize:", error);
-    throw new Error("Failed to transfer prize.", error.message); */
+    console.error("Error transferring prize:", error);
+    throw new Error("Failed to transfer prize.");
   }
 }
 
 const determineWinner = () => {
-  console.log("test - determining winner");
-  return Math.random() < 0.7;
+  return Math.random() < 0.8;
 };
 
-export async function GET (req: NextRequest, res: NextResponse) {
+export async function GET(req: NextRequest, res: NextResponse) {
   try {
     const searchParams = req.nextUrl.searchParams;
     const txHash = searchParams.get("txHash");
-    console.log("test backend DDD - ", { searchParams, txHash }, );
 
-    const txReceipt = await provider.getTransactionReceipt(txHash as string);
-
-    console.log("test backend - ", { txReceipt });
-
-    return NextResponse.json(
-      {
-        message:
-          "Congratulations! You won and the prize has been transferred.",
-      },
-      { status: 200 }
-    );
-
-    /* return NextResponse.json(
-        {ok: true, message: 'test: ', txHash},
-        {status: 200}
-      ) */
-
-    /* if (txReceipt.finality_status !== "ACCEPTED_ON_L1") {
-      return res.status(202).json({
-        status: "pending",
-        message: "Transaction not yet confirmed on L1. Please try again later.",
-      });
+    if (!txHash) {
+      throw new Error("Transaction hash is required.");
     }
 
-    const txDetails = await provider.getTransaction(txHash);
-    const recipientAddress = txDetails.sender_address;
+    console.log("testing backend 1 - ", { searchParams, txHash });
 
+    const txReceipt = (await provider.waitForTransaction(txHash as string)) as {
+      finality_status: string;
+    };
+
+    console.log("testing backend 2 - ", { txReceipt });
+
+    if (txReceipt.finality_status !== "ACCEPTED_ON_L1") {
+      return NextResponse.json(
+        {
+          status: "pending",
+          message:
+            "Transaction not yet confirmed on L1. Please try again later.",
+        },
+        { status: 202 }
+      );
+    }
+
+    const txDetails = (await provider.getTransaction(txHash)) as any;
+    const recipientAddress = txDetails.sender_address;
     const isWinner = determineWinner();
+
     if (isWinner) {
       try {
         await transferPrize(recipientAddress);
@@ -106,23 +111,31 @@ export async function GET (req: NextRequest, res: NextResponse) {
       } catch (transferError) {
         console.error("Prize transfer failed:", transferError);
 
-        return res.status(500).json({
-          status: "error",
+        return NextResponse.json(
+          {
+            status: "error",
+            isWinner,
+            message:
+              "You won, but prize transfer failed. Please contact support.",
+          },
+          { status: 500 }
+        );
+      }
+    } else {
+      return NextResponse.json(
+        {
+          status: "success",
           isWinner,
-          message:
-            "You won, but prize transfer failed. Please contact support.",
-          error: transferError.message,
-        });
-      } */
-   /*  } else {
-      return res.json({
-        status: "success",
-        isWinner,
-        message: "Better luck next time!",
-      });
-    } */
+          message: "Better luck next time!",
+        },
+        { status: 200 }
+      );
+    }
   } catch (error) {
     console.error("Error fetching transaction:", error);
-    return NextResponse.json({ ok: true, message: "test: " }, { status: 500 });
+    return NextResponse.json(
+      { ok: true, message: "Error fetching transaction: " },
+      { status: 500 }
+    );
   }
 }
