@@ -20,7 +20,7 @@ async function transferPrize(recipient: any) {
   console.log("Initiating prize to: ", recipient);
 
   const bettingGameContractAddress =
-    "0x044a14b61a797d551094d2c430b89391d7b83bd24bbd17ca0de39be9979e1510";
+    "0x001058b0fd2e63557dc7ee60dce5f45febb49f59518f330688a321e95b6b2e46";
   const gameContract = new Contract(
     betting_game_Abi,
     bettingGameContractAddress,
@@ -29,6 +29,8 @@ async function transferPrize(recipient: any) {
 
   // Connect the contract with the account to allow signing transactions
   gameContract.connect(account);
+
+  console.log('test: ', {bettingGameContractAddress});
 
   try {
     const txResponse = await account.execute({
@@ -81,7 +83,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
 
     console.log("testing backend 2 - ", { txReceipt });
 
-    if (txReceipt.finality_status !== "ACCEPTED_ON_L1") {
+    if (txReceipt.finality_status !== "ACCEPTED_ON_L2") {
       return NextResponse.json(
         {
           status: "pending",

@@ -78,9 +78,9 @@ const Home: NextPage = () => {
     <>
       <div className="flex items-center flex-col flex-grow pt-10">
         <div className="px-5">
-          <h1 className="uppercase text-lg font-bold bg-gradient-to-r from-cyan-500 to-cyan-300 bg-clip-text text-transparent">
+          {/* <h1 className="uppercase text-lg font-bold bg-gradient-to-r from-cyan-500 to-cyan-300 bg-clip-text text-transparent">
             TapStark
-          </h1>
+          </h1> */}
 
           <div className="flex flex-col items-center gap-1 mb-12">
             <p className="text-2xl text-gray-100 sm:text-3xl">

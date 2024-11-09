@@ -130,7 +130,7 @@ export const Header = () => {
           >
             <Bars3Icon className="h-1/2" />
           </label>
-          {isDrawerOpen && (
+          {/* {isDrawerOpen && (
             <ul
               tabIndex={0}
               className="menu menu-compact dropdown-content mt-3 p-2 shadow rounded-box w-52 bg-base-100"
@@ -140,7 +140,7 @@ export const Header = () => {
             >
               <HeaderMenuLinks />
             </ul>
-          )}
+          )} */}
         </div>
         <Link
           href="/"
@@ -152,17 +152,17 @@ export const Header = () => {
               alt="SE2 logo"
               className="cursor-pointer"
               fill
-              src="/logo.svg"
+              src="/star.png"
             />
           </div>
           <div className="flex flex-col">
-            <span className="font-bold leading-tight">Scaffold-Stark</span>
-            <span className="text-xs">Starknet dev stack</span>
+            <span className="font-bold leading-tight">TapStark</span>
+            {/* <span className="text-xs">TapStark</span> */}
           </div>
         </Link>
-        <ul className="hidden lg:flex lg:flex-nowrap menu menu-horizontal px-1 gap-2">
+        {/* <ul className="hidden lg:flex lg:flex-nowrap menu menu-horizontal px-1 gap-2">
           <HeaderMenuLinks />
-        </ul>
+        </ul> */}
       </div>
       <div className="navbar-end flex-grow mr-2 gap-4">
         {status === "connected" && !isDeployed ? (
