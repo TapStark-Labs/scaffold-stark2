@@ -21,7 +21,7 @@ async function transferPrize(recipient: any) {
   console.log("Initiating prize to: ", recipient);
 
   const bettingGameContractAddress =
-    "0x001058b0fd2e63557dc7ee60dce5f45febb49f59518f330688a321e95b6b2e46";
+  deployedContracts.devnet.bettingcontract.address;
   const gameContract = new Contract(
     betting_game_Abi,
     bettingGameContractAddress,
