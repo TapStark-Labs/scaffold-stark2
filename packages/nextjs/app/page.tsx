@@ -14,15 +14,19 @@ import { useDeployedContractInfo } from "~~/hooks/scaffold-stark";
 const Home: NextPage = () => {
   const { address: connectedAddress, isConnected, isConnecting } = useAccount();
   const [tokensToBuy, setTokensToBuy] = useState<string | bigint>("");
-
-  console.log({ connectedAddress });
+  const [betResult, setBetResult] = useState<any>({
+    isWinner: false,
+    message: "",
+  });
 
   function formatEther(weiValue: number) {
     const etherValue = weiValue / 1e18;
     return etherValue.toFixed(1);
   }
 
-  const { data: bettingcontract } = useDeployedContractInfo("bettingcontract");
+  const { data: bettingcontract } = useDeployedContractInfo("BettingGameTest");
+
+  console.log("check contract: ", { bettingcontract });
 
   const fetchPlayResult = async (txHash: string) => {
     const response = await fetch(`api/play?txHash=${txHash}`);
@@ -33,6 +37,8 @@ const Home: NextPage = () => {
 
     const data = await response.json();
     console.log("testing frontend: ", { data });
+
+    setBetResult({ isWinner: data.isWinner, message: data.message });
     return data;
   };
 
@@ -41,24 +47,25 @@ const Home: NextPage = () => {
       {
         contractName: "Eth",
         functionName: "approve",
-        args: [bettingcontract?.address ?? "", 5 * 10 ** 17],
+        args: ["0x001058B0fd2E63557DC7ee60DCe5F45fEbb49F59518F330688a321E95B6b2e46", 5 * 10 ** 15],
       },
       {
-        contractName: "bettingcontract",
+        contractName: "BettingGameTest",
         functionName: "place_bet",
-        args: [5 * 10 ** 17],
+        args: [1 * 10 ** 15],
       },
     ],
   });
 
   const { data: prizepool } = useScaffoldReadContract({
-    contractName: "bettingcontract",
+    contractName: "BettingGameTest",
     functionName: "get_prize_pool",
     watch: true,
   });
 
   const onBetClick = async () => {
     try {
+      console.log("clicked");
       if (!isConnected) {
         console.log("Please connect");
         return;
@@ -81,7 +88,6 @@ const Home: NextPage = () => {
     <>
       <div className="flex items-center flex-col flex-grow pt-10">
         <div className="px-5">
-          
           <div className="flex flex-col items-center gap-1 mb-12 justify-center">
             <p className="text-2xl text-gray-100 sm:text-3xl">
               Play to win the
@@ -118,7 +124,17 @@ const Home: NextPage = () => {
                   className="cursor-pointer sm:w-48 sm:h-48"
                 />
               </div>
+              <div className="mb-4">
+                <p className="text-md font-bold glow-pulse sm:text-xl">
+                  Tap to play
+                </p>
+              </div>
             </div>
+          )}
+          {betResult.isWinner && (
+            <h1 className="uppercase text-lg font-bold bg-gradient-to-r from-cyan-500 to-cyan-300 bg-clip-text text-transparent text-center">
+              {betResult.message}
+            </h1>
           )}
         </div>
       </div>

@@ -35,6 +35,7 @@
     "prettier": "^3.2.5"
   },
   "dependencies": {
+    "@cartridge/connector": "^0.3.46",
     "@tanstack/react-query": "^5.59.20",
     "postcss": "^8.4.38"
   }
