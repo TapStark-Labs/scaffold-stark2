@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ScaffoldStarkAppWithProviders } from "~~/components/ScaffoldStarkAppWithProviders";
 import "~~/styles/globals.css";
 import { ThemeProvider } from "~~/components/ThemeProvider";
+import { CartridgeProvider } from "./providers/CartridgeProvider";
 
 export const metadata: Metadata = {
   title: "TapStark",
@@ -14,9 +15,11 @@ const ScaffoldStarkApp = ({ children }: { children: React.ReactNode }) => {
     <html suppressHydrationWarning>
       <body>
         <ThemeProvider enableSystem>
-          <ScaffoldStarkAppWithProviders>
-            {children}
-          </ScaffoldStarkAppWithProviders>
+          <CartridgeProvider>
+            <ScaffoldStarkAppWithProviders>
+              {children}
+            </ScaffoldStarkAppWithProviders>
+          </CartridgeProvider>
         </ThemeProvider>
       </body>
     </html>

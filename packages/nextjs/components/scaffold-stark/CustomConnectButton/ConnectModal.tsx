@@ -1,14 +1,12 @@
-import { Connector, useConnect } from "@starknet-react/core";
 import { useRef, useState } from "react";
-import Wallet from "~~/components/scaffold-stark/CustomConnectButton/Wallet";
+import { useTheme } from "next-themes";
 import { useLocalStorage } from "usehooks-ts";
 import { burnerAccounts } from "~~/utils/devnetAccounts";
 import { BurnerConnector } from "~~/services/web3/stark-burner/BurnerConnector";
-import { useTheme } from "next-themes";
 import { BlockieAvatar } from "../BlockieAvatar";
 import GenericModal from "./GenericModal";
-import scaffoldConfig from "~~/scaffold.config";
 import { LAST_CONNECTED_TIME_LOCALSTORAGE_KEY } from "~~/utils/Constants";
+import { ConnectWallet } from "~~/components/ConnectWallet";
 
 const loader = ({ src }: { src: string }) => {
   return src;
@@ -19,17 +17,16 @@ const ConnectModal = () => {
   const [isBurnerWallet, setIsBurnerWallet] = useState(false);
   const { resolvedTheme } = useTheme();
   const isDarkMode = resolvedTheme === "dark";
-  const { connectors, connect, error, status, ...props } = useConnect();
   const [_, setLastConnector] = useLocalStorage<{ id: string; ix?: number }>(
     "lastUsedConnector",
     { id: "" },
     {
       initializeWithValue: false,
-    },
+    }
   );
   const [, setLastConnectionTime] = useLocalStorage<number>(
     LAST_CONNECTED_TIME_LOCALSTORAGE_KEY,
-    0,
+    0
   );
 
   const handleCloseModal = () => {
@@ -38,9 +35,9 @@ const ConnectModal = () => {
     }
   };
 
-  function handleConnectWallet(
+  /* function handleConnectWallet(
     e: React.MouseEvent<HTMLButtonElement>,
-    connector: Connector,
+    connector: Connector
   ): void {
     if (connector.id === "burner-wallet") {
       setIsBurnerWallet(true);
@@ -54,10 +51,10 @@ const ConnectModal = () => {
 
   function handleConnectBurner(
     e: React.MouseEvent<HTMLButtonElement>,
-    ix: number,
+    ix: number
   ) {
     const connector = connectors.find(
-      (it) => it.id == "burner-wallet",
+      (it) => it.id == "burner-wallet"
     ) as BurnerConnector;
     if (connector) {
       connector.burnerAccount = burnerAccounts[ix];
@@ -66,13 +63,13 @@ const ConnectModal = () => {
       setLastConnectionTime(Date.now());
       handleCloseModal();
     }
-  }
+  } */
 
   return (
     <div>
       <label
         htmlFor="connect-modal"
-        className="rounded-[18px]  btn-sm font-bold px-8 bg-btn-wallet py-3 cursor-pointer"
+        className="rounded-[18px] btn-sm font-bold px-8 bg-btn-wallet py-3 cursor-pointer"
       >
         <span>Connect</span>
       </label>
@@ -100,14 +97,7 @@ const ConnectModal = () => {
           <div className="flex flex-col flex-1 lg:grid">
             <div className="flex flex-col gap-4 w-full px-8 py-10">
               {!isBurnerWallet ? (
-                connectors.map((connector, index) => (
-                  <Wallet
-                    key={connector.id || index}
-                    connector={connector}
-                    loader={loader}
-                    handleConnectWallet={handleConnectWallet}
-                  />
-                ))
+                <ConnectWallet />
               ) : (
                 <div className="flex flex-col pb-[20px] justify-end gap-3">
                   <div className="h-[300px] overflow-y-auto flex w-full flex-col gap-2">
