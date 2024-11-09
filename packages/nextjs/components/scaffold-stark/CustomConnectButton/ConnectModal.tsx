@@ -99,7 +99,8 @@ const ConnectModal = () => {
               {!isBurnerWallet ? (
                 <ConnectWallet />
               ) : (
-                <div className="flex flex-col pb-[20px] justify-end gap-3">
+                <>
+                  {/* <div className="flex flex-col pb-[20px] justify-end gap-3">
                   <div className="h-[300px] overflow-y-auto flex w-full flex-col gap-2">
                     {burnerAccounts.map((burnerAcc, ix) => (
                       <div
@@ -119,7 +120,8 @@ const ConnectModal = () => {
                       </div>
                     ))}
                   </div>
-                </div>
+                </div> */}
+                </>
               )}
             </div>
           </div>
